@@ -6,16 +6,14 @@ import Ngram_model
 if __name__ == "__main__":
     student = Ngram_model.N_gram(6)
     arguments = sys.argv[1:]
-    model = arguments.index('--model')+1
-    if '--input-dir' in arguments:
-        test_path = arguments.index('--input-dir')+1
+    model = arguments[arguments.index('--model')+1]
+    length = int(arguments[arguments.index('--length')+1])
+    if '--prefix' in arguments:
+        lprefix = arguments[arguments.index('--prefix')+1:arguments.index('--prefix')+7]
+        prefix = ""
+        for it in lprefix:
+            prefix+=str(it)+" "
+        prefix = prefix[:-1]
     else :
-        test_path = "stdin"
-    if test_path == "stdin":
-        text = ""
-        for line in sys.stdin:
-            text += input()
-    else :
-        with open(test_path, 'r') as f:
-            text = f.read()
-    student.upfit(text,model)
+        prefix = 0
+    print(student.generate_sequence(model,prefix,length))

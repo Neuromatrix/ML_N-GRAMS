@@ -27,7 +27,9 @@ class N_gram:
         filter(None,self.corpus)
         self.corpus = re.sub(r'[^a-zA-Z0-9\s]', ' ', self.corpus)
         self.text = [token for token in self.corpus.split(" ") if token != ""]
-        self.vocab = self.vocab[0]
+
+        if len(self.vocab)>0:
+            self.vocab = self.vocab[0]
         for word in list(set(self.text)):
             self.vocab.append(word)
 
@@ -78,20 +80,24 @@ class N_gram:
         possible_words = []
         wweights = []
         for word in self.vocab:
+
             possible_words.append(word)
             wweights.append(self.probability(prefix,word))
         return random.choices(possible_words,weights=wweights,k = 1)
 
     def generate_sequence(self,model = 0,prefix = 0,length = 30)  -> str:
         self.load(model)
-        prefix = random.choice(self.n_grams)
+        if len(self.vocab) > 0:
+            self.vocab = self.vocab[0]
+        if prefix == 0:
+            prefix = random.choice(self.n_grams)
         prefix_queue = list(prefix.split(" "))
         result_seq = []
         for i in prefix_queue:
             tmp = []
             tmp.append(i)
             result_seq.append(tmp)
-
+        prefix_queue = prefix_queue[-self.n:]
         for _ in range(length):
             tmp_q = ""
             for i in prefix_queue:
@@ -127,10 +133,11 @@ class N_gram:
             pickle.dump(self.count_Nplusgrams, f)
 
 if __name__ == "__main__":
-    #! please dont touch model.pkl, there are 6grams from 1984, brave new world and animal farm(
+    #! please dont touch dump_model.pkl, there are 6grams from 1984, brave new world and animal farm(
     os.chdir(r"C:\Users\grivi\vscodes\ML\exam")
     with open("text.txt", 'r') as f:
         text = f.read()
     a = N_gram(6)
-    a.fit(text,r"C:\Users\grivi\vscodes\ML\exam\model.pkl")
-    print(a.generate_sequence(r"C:\Users\grivi\vscodes\ML\exam\model.pkl"))
+    a.upfit(text,r"C:\Users\grivi\vscodes\ML\exam\model.pkl")
+    b = N_gram(6)
+    print(b.generate_sequence(r"C:\Users\grivi\vscodes\ML\exam\model.pkl"))
