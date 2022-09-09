@@ -14,7 +14,8 @@ if __name__ == "__main__":
     if test_path == "stdin":
         text = ""
         for line in sys.stdin:
-            text += input()
+            text+=line
+        student.upfit(text,model)
     else :
         os.chdir(test_path)
         for filename in os.scandir(test_path):
